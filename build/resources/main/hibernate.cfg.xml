@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.org/dtd/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
+        <property name="hibernate.connection.url">jdbc:mysql://192.168.111.124:3306/poserlangga?useSSL=false</property>
+        <property name="hibernate.connection.username">root</property>
+        <property name="hibernate.connection.password">reza1234</property>
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</property>
+        <property name="hibernate.show_sql">true</property>
+        <property name="hibernate.hbm2ddl.auto">update</property>
+<property name="hibernate.show_sql">true</property>
+<property name="hibernate.format_sql">true</property>
+<property name="hibernate.use_sql_comments">true</property>
+        <!-- Add your entity classes here -->
+        <mapping class="POS.models.User"/> 
+        <mapping class="POS.models.Category"/> 
+        <mapping class="POS.models.Product"/> 
+        <mapping class="POS.models.Order"/> 
+        <mapping class="POS.models.Customer"/> 
+        <mapping class="POS.models.OrderItem"/> 
+
+        <mapping class="POS.models.PaymentMethod"/> 
+
+
+
+
+
+    </session-factory>
+</hibernate-configuration>
