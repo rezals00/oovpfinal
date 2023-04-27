@@ -13,6 +13,10 @@ import javax.persistence.*;
 @Entity
 @Table(name = "users")
 public class User {
+    public static enum UserRole {
+        admin,
+        user;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -87,7 +91,3 @@ public class User {
     }
 }
 
-enum UserRole {
-    admin,
-    user;
-}

@@ -10,6 +10,7 @@ import POS.Controller.UserController;
 import POS.models.Customer;
 import java.util.List;
 import java.util.function.Consumer;
+import javax.swing.JFrame;
 import javax.swing.JTable;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -27,27 +28,45 @@ public class CustomerSelect extends javax.swing.JFrame {
     private Consumer<Customer> onSelectedCallback;
     private Customer selectedCustomer;
 
-
     public CustomerSelect() {
         initComponents();
-        Load();
+        Init();
     }
+
     public void setOnSelected(Consumer<Customer> callback) {
         this.onSelectedCallback = callback;
     }
+
     public void Load() {
-        List<Customer> customers = customerController.getCustomers();
+        List<Customer> customers = (search.getText().length() == 0 ? customerController.getCustomers() : customerController.getCustomers(search.getText()));
         CustomerTableModel model = new CustomerTableModel(customers);
+
         table.setModel(model);
-        table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+    }
+
+    public void Init() {
+                        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+                setLocationRelativeTo(null);
+        Load();
+        System.out.print("CALLED");
+        table.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
             public void valueChanged(ListSelectionEvent event) {
+                if (event.getValueIsAdjusting()) {
+                    return;
+                }
+
                 // do some actions here, for example
                 // print first column value from selected row
                 int row = table.getSelectedRow();
+                System.out.print("CALLED");
                 if (row >= 0) {
-                    selectedCustomer = model.getCustomer(row);
+                    selectedCustomer = ((CustomerTableModel) table.getModel()).getCustomer(row);
                     if (onSelectedCallback != null) {
                         onSelectedCallback.accept(selectedCustomer);
+                    } else {
+                        JFrame parent = new CustomerDetail(selectedCustomer);
+                        parent.setVisible(true);
+
                     }
                 }
             }
@@ -66,24 +85,86 @@ public class CustomerSelect extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         table = new javax.swing.JTable();
+        jPanel1 = new javax.swing.JPanel();
+        search = new javax.swing.JTextField();
+        add = new javax.swing.JButton();
+        searchBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setBackground(new java.awt.Color(255, 255, 255));
 
         jScrollPane1.setViewportView(table);
+
+        add.setBackground(new java.awt.Color(0, 173, 181));
+        add.setForeground(new java.awt.Color(255, 255, 255));
+        add.setText("Tambah");
+        add.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                addActionPerformed(evt);
+            }
+        });
+
+        searchBtn.setBackground(new java.awt.Color(0, 173, 181));
+        searchBtn.setForeground(new java.awt.Color(255, 255, 255));
+        searchBtn.setText("Cari");
+        searchBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                searchBtnActionPerformed(evt);
+            }
+        });
+
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
+                .addComponent(searchBtn)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(add)
+                .addContainerGap())
+        );
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(jPanel1Layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(searchBtn)
+                    .addComponent(add))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, 300, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
+        // TODO add your handling code here:
+        Load();
+    }//GEN-LAST:event_searchBtnActionPerformed
+
+    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
+        // TODO add your handling code here:
+        new CustomerDetail().setVisible(true);
+    }//GEN-LAST:event_addActionPerformed
 
     /**
      * @param args the command line arguments
@@ -122,7 +203,11 @@ public class CustomerSelect extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton add;
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JTextField search;
+    private javax.swing.JButton searchBtn;
     private javax.swing.JTable table;
     // End of variables declaration//GEN-END:variables
 }

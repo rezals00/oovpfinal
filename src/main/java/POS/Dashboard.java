@@ -84,6 +84,11 @@ public class Dashboard extends javax.swing.JFrame {
                 activeUser = users.get(0);
             }
         }
+        if(activeUser.getRole() != User.UserRole.admin) {
+            manageProduct.setVisible(false);
+            manageCustomer.setVisible(false);
+            manageCategory.setVisible(false);
+        }
         userBtn.setText(activeUser.getUsername());
     }
 
@@ -203,6 +208,10 @@ public class Dashboard extends javax.swing.JFrame {
     }
 
     public void SelectCustomer() {
+        if(cs != null) {
+         cs.setVisible(true);
+         return;
+        }
         cs = new CustomerSelect();
         cs.setTitle("Pilih Customer");
         Consumer<Customer> callback = (Customer customer) -> {
@@ -210,7 +219,6 @@ public class Dashboard extends javax.swing.JFrame {
             selectCustomer.setText(customer.getName());
             selectedCustomer = customer;
             cs.setVisible(false);
-            cs = null;
         };
         cs.setVisible(true);
         cs.setOnSelected(callback);
@@ -249,6 +257,8 @@ public class Dashboard extends javax.swing.JFrame {
     }
 
     public void Initialization() {
+                        setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+
         setExtendedState(JFrame.MAXIMIZED_BOTH);
         Timer timer = new Timer(1000, new ActionListener() {
     public void actionPerformed(ActionEvent e) {
@@ -297,6 +307,16 @@ timer.start();
         userBtn = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         waktu = new javax.swing.JLabel();
+        manageCustomer = new javax.swing.JButton();
+        manageProduct = new javax.swing.JButton();
+        manageCategory = new javax.swing.JButton();
+        jInternalFrame1 = new javax.swing.JInternalFrame();
+        jMenuBar1 = new javax.swing.JMenuBar();
+        jMenu2 = new javax.swing.JMenu();
+        jMenuItem1 = new javax.swing.JMenuItem();
+        jMenu5 = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
+        jMenuItem3 = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(255, 255, 255));
@@ -374,6 +394,11 @@ timer.start();
         userBtn.setFont(new java.awt.Font("Helvetica Neue", 0, 18)); // NOI18N
         userBtn.setForeground(new java.awt.Color(255, 255, 255));
         userBtn.setText("jButton1");
+        userBtn.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                userBtnActionPerformed(evt);
+            }
+        });
 
         jLabel1.setFont(new java.awt.Font("Helvetica Neue", 0, 36)); // NOI18N
         jLabel1.setForeground(new java.awt.Color(255, 255, 255));
@@ -382,6 +407,23 @@ timer.start();
         waktu.setFont(new java.awt.Font("Helvetica Neue", 0, 24)); // NOI18N
         waktu.setForeground(new java.awt.Color(255, 255, 255));
         waktu.setText("00:00:00");
+
+        manageCustomer.setBackground(new java.awt.Color(0, 173, 181));
+        manageCustomer.setForeground(new java.awt.Color(255, 255, 255));
+        manageCustomer.setText("Manage Customer");
+        manageCustomer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                manageCustomerActionPerformed(evt);
+            }
+        });
+
+        manageProduct.setBackground(new java.awt.Color(0, 173, 181));
+        manageProduct.setForeground(new java.awt.Color(255, 255, 255));
+        manageProduct.setText("Manage Product");
+
+        manageCategory.setBackground(new java.awt.Color(0, 173, 181));
+        manageCategory.setForeground(new java.awt.Color(255, 255, 255));
+        manageCategory.setText("Manage Category");
 
         javax.swing.GroupLayout navbarLayout = new javax.swing.GroupLayout(navbar);
         navbar.setLayout(navbarLayout);
@@ -392,7 +434,13 @@ timer.start();
                 .addComponent(jLabel1)
                 .addGap(18, 18, 18)
                 .addComponent(waktu)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 685, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 159, Short.MAX_VALUE)
+                .addComponent(manageProduct)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(manageCustomer)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(manageCategory)
+                .addGap(120, 120, 120)
                 .addComponent(userBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 145, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(32, 32, 32))
         );
@@ -401,12 +449,58 @@ timer.start();
             .addGroup(navbarLayout.createSequentialGroup()
                 .addGap(15, 15, 15)
                 .addGroup(navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(userBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(userBtn, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(manageCustomer)
+                        .addComponent(manageProduct)
+                        .addComponent(manageCategory))
                     .addGroup(navbarLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel1)
                         .addComponent(waktu)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
+
+        jInternalFrame1.setVisible(true);
+
+        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
+        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
+        jInternalFrame1Layout.setHorizontalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jInternalFrame1Layout.setVerticalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+
+        jMenu2.setText("Credits");
+
+        jMenuItem1.setText("Author Erlangga");
+        jMenuItem1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem1ActionPerformed(evt);
+            }
+        });
+        jMenu2.add(jMenuItem1);
+
+        jMenuBar1.add(jMenu2);
+
+        jMenu5.setText("Admin");
+
+        jMenuItem2.setText("Manage User");
+        jMenuItem2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jMenuItem2ActionPerformed(evt);
+            }
+        });
+        jMenu5.add(jMenuItem2);
+
+        jMenuItem3.setText("Manage Product");
+        jMenu5.add(jMenuItem3);
+
+        jMenuBar1.add(jMenu5);
+
+        setJMenuBar(jMenuBar1);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -417,7 +511,8 @@ timer.start();
                 .addGap(36, 36, 36)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addComponent(productsPane, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(categoryScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE))
+                    .addComponent(categoryScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 837, Short.MAX_VALUE)
+                    .addComponent(jInternalFrame1))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -436,12 +531,14 @@ timer.start();
             .addGroup(layout.createSequentialGroup()
                 .addComponent(navbar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(selectCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(selectCustomer, javax.swing.GroupLayout.PREFERRED_SIZE, 54, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jInternalFrame1))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(6, 6, 6)
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 55, Short.MAX_VALUE)
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 31, Short.MAX_VALUE)
                         .addGap(12, 12, 12)
                         .addComponent(paymentOption, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(31, 31, 31)
@@ -525,6 +622,29 @@ timer.start();
         SelectCustomer();
     }//GEN-LAST:event_selectCustomerActionPerformed
 
+    private void manageCustomerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_manageCustomerActionPerformed
+        // TODO add your handling code here:
+        JFrame frame = new CustomerSelect();
+        frame.setVisible(true);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+    }//GEN-LAST:event_manageCustomerActionPerformed
+
+    private void userBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_userBtnActionPerformed
+        // TODO add your handling code here:
+        int result = JOptionPane.showConfirmDialog(this, "Yakin mau logout ?", "Logout", JOptionPane.OK_CANCEL_OPTION);
+        if(result != JOptionPane.OK_OPTION) return;
+        System.exit(0);
+    }//GEN-LAST:event_userBtnActionPerformed
+
+    private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem1ActionPerformed
+
+    private void jMenuItem2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem2ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jMenuItem2ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -563,8 +683,18 @@ timer.start();
     private javax.swing.JButton jButton5;
     private javax.swing.JButton jButton6;
     private javax.swing.JButton jButton7;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
+    private javax.swing.JMenu jMenu2;
+    private javax.swing.JMenu jMenu5;
+    private javax.swing.JMenuBar jMenuBar1;
+    private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
+    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JButton manageCategory;
+    private javax.swing.JButton manageCustomer;
+    private javax.swing.JButton manageProduct;
     private javax.swing.JPanel navbar;
     private javax.swing.JPanel orderItemList;
     private javax.swing.JPanel paymentOption;

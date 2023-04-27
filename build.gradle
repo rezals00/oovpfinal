@@ -37,7 +37,7 @@ implementation 'io.github.vincenzopalazzo:material-ui-swing:1.1.2'
 
 application {
     // Define the main class for the application.
-    mainClass = 'POS.App'
+    mainClass = 'POS.Login'
 }
 
 tasks.named('test') {

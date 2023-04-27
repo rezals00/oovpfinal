@@ -35,4 +35,23 @@ public class ProductController extends Controller {
             return products;
         }
     }
+    public Product Save(Product product) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(product);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return product;
+    }
+
+    public List<Product> getProducts(String search) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Product> query = session.createQuery("from Product where name like :search", Product.class);
+            query.setParameter("search", "%" + search + "%");
+            List<Product> products = query.getResultList();
+            return products;
+        }
+    }
 }

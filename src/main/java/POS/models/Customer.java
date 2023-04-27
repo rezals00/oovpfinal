@@ -21,11 +21,15 @@ public class Customer {
     @Column(nullable = false)
     private String name;
 
-    @Column(unique = true)
+    @Column(nullable = true)
     private String email;
 
-    @Column(unique = true)
+    @Column(nullable = true)
     private String phone;
+    
+    @Column(nullable = false)
+    private String type;
+    
 
     @Column
     private String address;
@@ -101,5 +105,19 @@ public class Customer {
      */
     public void setAddress(String address) {
         this.address = address;
+    }
+
+    /**
+     * @return the type
+     */
+    public String getType() {
+        return type;
+    }
+
+    /**
+     * @param type the type to set
+     */
+    public void setType(String type) {
+        this.type = type;
     }
 }

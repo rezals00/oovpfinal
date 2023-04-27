@@ -22,4 +22,24 @@ public class CategoryController extends Controller {
             return categories;
         }
     }
+
+    public Category Save(Category category) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(category);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return category;
+    }
+
+    public List<Category> getCategories(String search) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Category> query = session.createQuery("from Category where name like :search", Category.class);
+            query.setParameter("search", "%" + search + "%");
+            List<Category> categories = query.getResultList();
+            return categories;
+        }
+    }
 }

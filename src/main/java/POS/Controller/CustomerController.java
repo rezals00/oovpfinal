@@ -23,4 +23,22 @@ public class CustomerController extends Controller {
             return customers;
         }
     }
+    public Customer Save(Customer customer) {
+        try (Session session = sessionFactory.openSession()) {
+            session.beginTransaction();
+            session.saveOrUpdate(customer);
+            session.getTransaction().commit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return customer;
+    }
+    public List<Customer> getCustomers(String search) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Customer> query = session.createQuery("from Customer where name like :search or phone like :search or email like :search", Customer.class);
+            query.setParameter("search", "%" +  search +"%");
+            List<Customer> customers = query.getResultList();
+            return customers;
+        }
+    }
 }
