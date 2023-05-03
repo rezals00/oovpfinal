@@ -121,7 +121,7 @@
         <Component class="javax.swing.JTree" name="Menu">
           <Properties>
             <Property name="model" type="javax.swing.tree.TreeModel" editor="org.netbeans.modules.form.editors2.TreeModelEditor">
-              <TreeModel code="app&#xa; pos&#xa;  dashboard&#xa; admin&#xa;  categories&#xa;  products&#xa;  customers&#xa; keluar&#xa;  "/>
+              <TreeModel code="app&#xa; pos&#xa;  dashboard&#xa; admin&#xa;  categories&#xa;  products&#xa;  customers&#xa;  history&#xa; keluar&#xa;  "/>
             </Property>
           </Properties>
           <Events>

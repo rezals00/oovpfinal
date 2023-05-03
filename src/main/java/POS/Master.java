@@ -32,6 +32,17 @@ public class Master extends javax.swing.JFrame {
         setExtendedState(MAXIMIZED_BOTH);
         profile.setText(user.getUsername());
     }
+    public void ShowMenu(Container container, String title) {
+        
+        JInternalFrame internalFrame = new JInternalFrame(title, true, true, true, true);
+        internalFrame.add(container);
+        desktop.add(internalFrame);
+        try {
+            internalFrame.setMaximum(true);
+        } catch (PropertyVetoException ex) {
+            Logger.getLogger(Master.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -81,6 +92,8 @@ public class Master extends javax.swing.JFrame {
         treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("products");
         treeNode2.add(treeNode3);
         treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("customers");
+        treeNode2.add(treeNode3);
+        treeNode3 = new javax.swing.tree.DefaultMutableTreeNode("history");
         treeNode2.add(treeNode3);
         treeNode1.add(treeNode2);
         treeNode2 = new javax.swing.tree.DefaultMutableTreeNode("keluar");
@@ -174,6 +187,10 @@ public class Master extends javax.swing.JFrame {
         if(nodeInfo.toString().equals("products")) {
            title = "Select Product";
            container = new ProductSelect().getContentPane();
+        }
+        if(nodeInfo.toString().equals("history")) {
+           title = "Riwayat";
+           container = new History().getContentPane();
         }
        
         

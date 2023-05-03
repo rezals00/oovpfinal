@@ -10,6 +10,7 @@ import com.formdev.flatlaf.FlatLightLaf;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import static java.lang.System.in;
 import java.text.NumberFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
@@ -560,7 +561,7 @@ timer.start();
         Double totalTransaksi = 0.0;
 
         for (var order : currentOrders) {
-            totalTransaksi = order.getQuantity() * order.getProduct().getPrice();
+            totalTransaksi += order.getQuantity() * order.getProduct().getPrice();
         }
         if (selectedCustomer == null) {
             JOptionPane.showMessageDialog(this, "Pilih customer terlebih dahulu", "Invalid", JOptionPane.ERROR_MESSAGE);
@@ -603,11 +604,21 @@ timer.start();
 
         Order order = new Order();
         order.setCustomer(selectedCustomer);
-        order.setOrderItems(currentOrders.stream().collect(Collectors.toSet()));
         order.setTotal(totalTransaksi);
         order.setUser(activeUser);
         order.setOrderDate(new Date());
         orderController.SaveOrder(order);
+        var orders = order.getOrderItems();
+        
+        for(int i = 0; i < currentOrders.size(); i++) {
+            var orderItem = currentOrders.get(i);
+            orderItem.setOrder(order);
+            currentOrders.set(i, orderItem);
+        }
+        order.setOrderItems(currentOrders.stream().collect(Collectors.toSet()));
+        orderController.SaveOrder(order);
+
+
 
         JOptionPane.showMessageDialog(this, "Transkasi Berhasil disimpan", "Berhasil", JOptionPane.INFORMATION_MESSAGE);
 

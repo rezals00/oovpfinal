@@ -20,10 +20,25 @@ public class OrderController extends Controller {
         
         try (Session session = sessionFactory.openSession()) {
             session.beginTransaction();
-            session.save(order);
+            session.saveOrUpdate(order);
             session.getTransaction().commit();
         } catch (Exception e) {
             e.printStackTrace();
+        }
+    }
+    public List<Order> getOrders() {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Order> query = session.createQuery("from Order", Order.class);
+            List<Order> orders = query.getResultList();
+            return orders;
+        }
+    }
+    public List<Order> getOrders(String search) {
+        try (Session session = sessionFactory.openSession()) {
+            Query<Order> query = session.createQuery("from Order  where Order.customer.name like :search", Order.class);
+            query.setParameter("search", "%" +  search +"%");
+            List<Order> orders = query.getResultList();
+            return orders;
         }
     }
 }

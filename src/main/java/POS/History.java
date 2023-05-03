@@ -4,13 +4,18 @@
  */
 package POS;
 
-import POS.Components.CategoryTableModel;
-import POS.Components.*;
-import POS.Controller.*;
-import POS.models.*;
+import POS.Components.CustomerTableModel;
+import POS.Components.HistoryTableModel;
+import POS.Controller.CustomerController;
+import POS.Controller.OrderController;
+import POS.models.Customer;
+import POS.models.Order;
+import POS.models.OrderItem;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.function.Consumer;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import static javax.swing.WindowConstants.DISPOSE_ON_CLOSE;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
@@ -19,29 +24,24 @@ import javax.swing.event.ListSelectionListener;
  *
  * @author erlanggafauzan
  */
-public class CategorySelect extends javax.swing.JFrame {
+public class History extends javax.swing.JFrame {
 
     /**
-     * Creates new form CategorySelect
+     * Creates new form History
      */
-    CategoryController categoryController = new CategoryController();
-    private Consumer<Category> onSelectedCallback;
-    private Category selectedCategory;
+    public NumberFormat formatter = NumberFormat.getInstance();
+    OrderController orderController = new OrderController();
+    History that;
 
-    public CategorySelect() {
+    public History() {
         initComponents();
         Init();
-        new ProductManager();
-
-    }
-
-    public void setOnSelected(Consumer<Category> callback) {
-        this.onSelectedCallback = callback;
+        that = this;
     }
 
     public void Load() {
-        List<Category> categories = (search.getText().length() == 0 ? categoryController.getCategories() : categoryController.getCategories(search.getText()));
-        CategoryTableModel model = new CategoryTableModel(categories);
+        List<Order> orders = (search.getText().length() == 0 ? orderController.getOrders() : orderController.getOrders(search.getText()));
+        HistoryTableModel model = new HistoryTableModel(orders);
 
         table.setModel(model);
     }
@@ -60,19 +60,25 @@ public class CategorySelect extends javax.swing.JFrame {
                 // do some actions here, for example
                 // print first column value from selected row
                 int row = table.getSelectedRow();
-                System.out.print("CALLED");
+                Order order = ((HistoryTableModel) table.getModel()).getOrder(row);
                 if (row >= 0) {
-                    selectedCategory = ((CategoryTableModel) table.getModel()).getCategory(row);
-                    if (onSelectedCallback != null) {
-                        onSelectedCallback.accept(selectedCategory);
-                    } else {
-                        JFrame parent = new CategoryDetail(selectedCategory);
-                        parent.setVisible(true);
+                    String message = "Detail Transaksi \n"
+                            + "---------------------\n";
+                    var itter = order.getOrderItems().iterator();
+                    while (itter.hasNext()) {
+                        OrderItem orderItem = itter.next();
+                        message += orderItem.getProduct().getName() + "  -   " + orderItem.getQuantity() + "x Rp." + formatter.format(orderItem.getProduct().getPrice()) + "\n";
 
                     }
+                    message += "--------------------- \n"
+                            + "Nama Customer: " + order.getCustomer().getName()
+                            + "\nTotal: Rp." + formatter.format(order.getTotal());
+                    JOptionPane.showMessageDialog(that, message);
+
                 }
             }
         });
+
     }
 
     /**
@@ -88,21 +94,11 @@ public class CategorySelect extends javax.swing.JFrame {
         table = new javax.swing.JTable();
         jPanel1 = new javax.swing.JPanel();
         search = new javax.swing.JTextField();
-        add = new javax.swing.JButton();
         searchBtn = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jScrollPane1.setViewportView(table);
-
-        add.setBackground(new java.awt.Color(0, 173, 181));
-        add.setForeground(new java.awt.Color(255, 255, 255));
-        add.setText("Tambah");
-        add.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                addActionPerformed(evt);
-            }
-        });
 
         searchBtn.setBackground(new java.awt.Color(0, 173, 181));
         searchBtn.setForeground(new java.awt.Color(255, 255, 255));
@@ -122,9 +118,7 @@ public class CategorySelect extends javax.swing.JFrame {
                 .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(searchBtn)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(add)
-                .addContainerGap())
+                .addContainerGap(426, Short.MAX_VALUE))
         );
         jPanel1Layout.setVerticalGroup(
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -132,8 +126,7 @@ public class CategorySelect extends javax.swing.JFrame {
                 .addContainerGap()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(search, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(searchBtn)
-                    .addComponent(add))
+                    .addComponent(searchBtn))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
@@ -141,7 +134,7 @@ public class CategorySelect extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 400, Short.MAX_VALUE)
+            .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 638, Short.MAX_VALUE)
             .addComponent(jPanel1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
         layout.setVerticalGroup(
@@ -150,16 +143,11 @@ public class CategorySelect extends javax.swing.JFrame {
                 .addContainerGap()
                 .addComponent(jPanel1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE))
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 370, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
-    private void addActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_addActionPerformed
-        // TODO add your handling code here:
-        new CategoryDetail().setVisible(true);
-    }//GEN-LAST:event_addActionPerformed
 
     private void searchBtnActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_searchBtnActionPerformed
         // TODO add your handling code here:
@@ -183,26 +171,25 @@ public class CategorySelect extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(CategorySelect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(CategorySelect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(CategorySelect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(CategorySelect.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(History.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new CategorySelect().setVisible(true);
+                new History().setVisible(true);
             }
         });
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton add;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField search;

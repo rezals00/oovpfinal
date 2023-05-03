@@ -28,7 +28,7 @@ dependencies {
     implementation 'com.h2database:h2:1.4.200'
     implementation 'javax.persistence:javax.persistence-api:2.2'
     implementation 'commons-codec:commons-codec:1.15' // Add this line
-implementation 'io.github.vincenzopalazzo:material-ui-swing:1.1.2'
+    implementation 'io.github.vincenzopalazzo:material-ui-swing:1.1.2'
     implementation 'com.formdev:flatlaf:3.0' // Adjust to the latest version
 
 
